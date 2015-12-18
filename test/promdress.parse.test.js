@@ -3,7 +3,7 @@ import test from "ava"
 
 const Parse = require("parse/node")
 
-import { future, then, when, always, compose, resolve, reject, catches } from "../"
+import { future, then, when, always, compose, resolve, reject, catches } from "../parse"
 
 /* helpers */
 

@@ -1,2 +1,2 @@
 
-module.exports = require("./lib/prom-dress").default(require("parse/node"))
+module.exports = require("./lib/promdress").default

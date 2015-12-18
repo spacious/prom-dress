@@ -1,5 +1,5 @@
 {
-  "name": "prom-dress",
+  "name": "promdress",
   "version": "0.0.1",
   "description": "promise dresser for parse js sdk",
   "main": "index.js",

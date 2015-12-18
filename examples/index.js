@@ -1,11 +1,11 @@
 /** =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
- = prom-dress - parse promise helper library examples =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+ = ƤromƊress - parse promise helper library examples =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
 
 var Parse = require("parse/node")
 var Promise =  Parse.Promise;
 
-var ƤromƊress = require("../");
+var ƤromƊress = require("../parse");
 var future = ƤromƊress.future;
 var always = ƤromƊress.always;
 var compose = ƤromƊress.compose;
