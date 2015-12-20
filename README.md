@@ -2,9 +2,9 @@
 
 <p align="center"><em>small promise dresser built for a parse project... maybe for <a href="https://promisesaplus.com">Promises/A+</a> in the future</em></p>
 
-<p align="center"><em>inspired one late night by <a href="https://medium.com/@isntitvacant/observations-on-promises-2b08a0d0c27#.9fd2vkmsi">Observations on Promises</a></em></p>
+<p align="center"><em>inspired one late night by <a href="https://medium.com/@isntitvacant/observations-on-promises-2b08a0d0c27#.9fd2vkmsi">Observations on Promises</a>...</em></p>
 
-<p align="center"><em>super small and simply provides a little <code>then</code> to pass functions promises and a little <code>when</code> to pass promises functions</em></p>
+<p align="center"><em>super simple and small- just provides a little <code>then</code> to pass functions promises and a little <code>when</code> to pass promises functions...</em></p>
 
 ```javascript
 
