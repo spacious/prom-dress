@@ -1,200 +1,163 @@
 /** =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
- = ƤromƊress - parse promise helper library examples =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+ = ƤƊ - parse promise helper library examples =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
 
-var Parse = require("parse/node")
-var Promise =  Parse.Promise;
+"use strict"
 
-var ƤromƊress = require("../parse");
-var future = ƤromƊress.future;
-var always = ƤromƊress.always;
-var compose = ƤromƊress.compose;
-var then = ƤromƊress.then;
-var when = ƤromƊress.when;
-var º = when;
+const Parse = require("parse/node")
+const Promise =  Parse.Promise
 
+const ƤƊ = require("../parse")
+const always = ƤƊ.always
+const alwaysWhen = ƤƊ.alwaysWhen
+const catches = ƤƊ.catches
+const then = ƤƊ.then
+const when = ƤƊ.when
+const concatTo = ƤƊ.concatTo
+const spreadTo = ƤƊ.spreadTo
+const map = ƤƊ.map
+const compose = ƤƊ.compose
+const flatten = ƤƊ.flatten
+const resolve = ƤƊ.resolve
+const reject = ƤƊ.reject
+const unless  = ƤƊ.unless
 
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+const log = console.log.bind(console)
+let result = [asyncSuccess([1,2,4]), asyncSuccess([3,2,1])]
+then(log)(result)
+const inc = val => val + 2
+let flat = when(result)(flatten)
+let added = when(flat)(map(inc))
+then(log)(added)
 
-// normal promise workflow:
+when(resolve("."))(log)
+unless(reject("."))(log)
 
-getAsyncResults("using a normal promise chain")
-  .then(processSync)
-  .then(queryAsync)
-  .then(formatSync)
-  .then(log);
+let adding = when(result)(map(map(inc)))
+then(log)(adding)
 
-// using prms:
+let flats = when(result)(compose(map(inc), flatten))
+when(flats)(log)
 
-var results = getAsyncResults("using then/when");
+when(resolve([1,2,3]))(spreadTo(log))
 
-var processed = then(processSync)(results);
+when(1,2,3)(concatTo(log))
 
-var queried = then(queryAsync)(processed);
+catches(log)(reject(["XXXX"]))
 
-var formatted = then(formatSync)(queried);
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-when(formatted)(log);
+let results = getAsyncResults("data")
+let processed = then(processSync)(results)
+let queried = then(queryAsync)(processed)
+let formatted = then(formatSync)(queried)
 
-// pre-wrap functions to accept promise arguments
+when(formatted)(log)
 
-var process = future(processSync);
-var query = future(queryAsync);
-var format = future(formatSync);
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-// and then:
+const process = then(processSync)
+const query = then(queryAsync)
+const format = then(formatSync)
 
-results = getAsyncResults("using future pre-wrapped");
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-processed = process(results);
+processed = process(results)
 
-queried = query(processed);
+queried = query(processed)
 
-formatted = format(queried);
+formatted = format(queried)
 
-when(formatted)(log);
+when(formatted)(log)
 
-// one liners:
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-º(º(º(º(getAsyncResults("whoa"))(processSync))(queryAsync))(formatSync))(log);
+results = getAsyncResults("queryAsyncError")
 
-// composition:
+processed = process(results)
 
-var to_format = compose(formatSync, queryAsync, processSync);
+queried = when(processed)(queryAsyncError)
 
-var loaded = when(getAsyncResults("using compose"));
+formatted = format(queried)
 
-var formed = loaded(to_format);
+then(log)(formatted)
 
-when(formed)(log);
+unless(formatted)(log)
 
-// or
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-var others = getAsyncResults("also using compose");
+results = getAsyncResults("..")
 
-var also_formed = when(others)(to_format);
+processed = process(results)
 
-when(also_formed)(log);
+queried = then(queryAsyncError)(processed)
 
-// `then` and `when` are interchangeable (they both just alias `future`)
+formatted = always(formatSyncGuaranteed)(queried)
 
-then(processSync)(results) || when(processSync)(results);
-
-// they just make slightly more readable since order is also interchangeable:
-
-then(processSync)(results) || when(results)(processSync);
-
-// Errors =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-results = getAsyncResults("say hi to queryAsyncError");
-
-processed = process(results);
-
-queried = when(processed)(queryAsyncError);
-
-formatted = format(queried);
-
-then(log, errLog)(formatted);
-
-// Guarantees (always) =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-results = getAsyncResults("ok, query. meet our new format. it's...");
-
-processed = process(results);
-
-queried = then(queryAsyncError)(processed);
-
-formatted = always(formatSyncGuaranteed, wrnLog)(queried);
-
-when(formatted)(log, errLog);
+when(formatted)(log, log)
 
 // with no errors:
 
-results = getAsyncResults("welcome back, queryAsync");
+results = getAsyncResults("queryAsync")
 
-processed = process(results);
+processed = process(results)
 
-queried = query(processed);
+queried = query(processed)
 
-formatted = always(queried)(formatSyncGuaranteed, wrnLog);
+formatted = alwaysWhen(queried)(formatSyncGuaranteed)
 
-when(formatted)(log, errLog);
+when(formatted)(log, log)
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-
 
-// Helpers
+function getAsyncPromise(result, options){
+  const p = new Parse.Promise()
+  setTimeout(() => {
+    return options.resolves ? p.resolve(result) : p.reject(result) }, 100)
+  return p
+}
+function asyncSuccess(result){
+  return getAsyncPromise(result, { resolves: true })
+}
+
 
 function getAsyncResults(str){
-
-  var p = new Promise();
-
+  const p = new Promise()
   setTimeout(function(){
-
-    p.resolve({ "results": [str] });
-
-  },2000);
-
-  return p;
+    p.resolve({ "results": [str] })
+  },500)
+  return p
 }
 
 function processSync(result){
-
-  result.count = result.results.length;
-
-  return result;
+  result.count = result.results.length
+  return result
 }
 
 function queryAsync(result){
-
-  var p = new Promise();
-
+  const p = new Promise()
   setTimeout(function(){
-    return p.resolve({ "results": [result], "count": 2 });
-  },2000);
-
-  return p;
+    return p.resolve({ "results": [ result ] })
+  },500)
+  return p
 }
 
 function formatSync(result){
-
-  return result.results.concat(result.count);
-}
-
-function log(str){
-
-  console.log("[INFO] %j", str);
-  console.log();
+  return result.results[0].results[0].toUpperCase()
 }
 
 function formatSyncGuaranteed(result){
-
   if(!result || !result.results){
-
-    return [{ results: [ 'guaranteed' ], count: 1 }, 2];
+    return {
+      results: [ "ABC" ]
+    }
   }
 
-  result.results.push("(I am still guaranteed)");
-
-  return formatSync(result);
-}
-
-function wrnLog(str){
-
-  console.error("[WARN] There was an error (" + str + ") but it's ok.");
-  console.error();
+  return formatSync(result)
 }
 
 function queryAsyncError(){
-
-  var p = new Promise();
-
-  setTimeout(function(){ return p.reject("oh no! queries don't work!"); },2000);
-
-  return p;
-}
-
-function errLog(str){
-
-  console.error("[ERR] " + str + " : Everything past error was skipped! But we logged it.");
-  console.error();
+  const p = new Promise()
+  setTimeout(function(){ return p.reject(["ERROR"]) },500)
+  return p
 }

@@ -1,6 +1,6 @@
 {
   "name": "promdress",
-  "version": "0.0.1",
+  "version": "0.2.1",
   "description": "promise dresser for parse js sdk",
   "main": "index.js",
   "directories": {
@@ -10,8 +10,8 @@
     "lint": "eslint src/parse",
     "test": "nyc ava",
     "test-w": "nodemon -q -x 'npm test'",
-    "build": "babel -d ./lib --presets babel-preset-es2015 ./src/parse",
-    "build-w": "babel -w -d ./lib --presets babel-preset-es2015 ./src/parse"
+    "build": "babel -d ./lib --presets babel-preset-es2015 ./src",
+    "build-w": "babel -w -d ./lib --presets babel-preset-es2015 ./src"
   },
   "repository": {
     "type": "git",
