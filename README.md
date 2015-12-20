@@ -8,29 +8,30 @@
 
 ```javascript
 
-const dater = getAsyncResults("using a normal promise chain")
-  .then(processSync)
-  .then(queryAsync)
-  .then(formatSync)
+let result = [asyncSuccess([1,2,4]), asyncSuccess([3,2,1])]
+    
+then(log)(result)                       // [ [ 1, 2, 4 ], [ 3, 2, 1 ] ]
 
-```
+const inc = val => val + 2
 
-<p align="center"><em>into this...</em></p>
+let flat = when(result)(flatten)
 
-```javascript
+let added = when(flat)(map(inc))
+    
+then(log)(added)                        // [ 3, 4, 6, 5, 4, 3 ]
 
-import { then, when, unless, map, compose, flatten , spreadTo } from "../promdress"
+let adding = when(result)(map(map(inc)))
+    
+then(log)(adding)                       //[ [ 3, 4, 6 ], [ 5, 4, 3 ] ]
 
-const queryAsync = (key, data) => { ... }
-const format = then(compose(render, parse, load))
+let flats = when(result)(compose(map(inc), flatten))
+    
+when(flats)(log)                        //[ 3, 4, 6, 5, 4, 3 ]
 
-const results = getAsyncResults("...")
-const process = when(results)(map(processSync))
-const data = then(queryAsync)(key, process)
-const output = format(data, err => go(err))
+when(resolve([1,2,3]))(spreadTo(log))   // 1 2 3
 
-always(spreadTo(interweb))(ouput)
-unless(output)(errors => debug("there was an error"))
+when(1,2,3)(concatTo(log))              // [ 1, 2, 3 ]
 
+catches(log)(reject("ERROR"))           // [ 'ERROR' ]
 
 ```
