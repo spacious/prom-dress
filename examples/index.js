@@ -43,7 +43,7 @@ when(resolve([1,2,3]))(spreadTo(log))
 
 when(1,2,3)(concatTo(log))
 
-catches(log)(reject(["XXXX"]))
+catches(log)(reject("XXXX"))
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 

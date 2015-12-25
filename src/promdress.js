@@ -9,7 +9,7 @@ function ƤromƊress(Parse){
   const resolve = (val) => Pr.as(val)
   const reject = (err) => Pr.error(err)
 
-  /* Utility*/
+  /* Utility */
   const isArray = Array.isArray
   const identity = (id => id)
   const slice = Array.prototype.slice
